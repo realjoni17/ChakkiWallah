@@ -4,6 +4,7 @@ plugins {
     id 'com.google.gms.google-services'
     id 'kotlin-kapt'
     id 'com.google.dagger.hilt.android'
+    id("kotlin-parcelize")
 }
 
 android {
@@ -63,6 +64,7 @@ dependencies {
     androidTestImplementation "androidx.compose.ui:ui-test-junit4:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-tooling:$compose_ui_version"
     debugImplementation "androidx.compose.ui:ui-test-manifest:$compose_ui_version"
+    implementation 'org.jetbrains.kotlinx:kotlinx-serialization-json:1.5.0'
 
     //Firebase
     implementation platform('com.google.firebase:firebase-bom:31.5.0')
@@ -81,4 +83,5 @@ dependencies {
 
     //navigation
     implementation "androidx.navigation:navigation-compose:$nav_version"
+
 }
