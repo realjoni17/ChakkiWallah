@@ -10,7 +10,9 @@ import androidx.compose.material.Text
 import androidx.compose.runtime.Composable
 import androidx.compose.ui.Modifier
 import androidx.compose.ui.tooling.preview.Preview
+import com.android.chakkiwallah.domain.model.Product
 import com.android.chakkiwallah.presentation.homescreen.HomeScreen
+import com.android.chakkiwallah.presentation.productscreen.productscreen
 import com.android.chakkiwallah.presentation.ui.theme.ChakkiWallahTheme
 import dagger.hilt.android.AndroidEntryPoint
 
@@ -20,27 +22,15 @@ class MainActivity : ComponentActivity() {
         super.onCreate(savedInstanceState)
         setContent {
             ChakkiWallahTheme {
-                // A surface container using the 'background' color from the theme
+
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
-                    HomeScreen()
+               HomeScreen()
                 }
             }
         }
     }
 }
 
-@Composable
-fun Greeting(name: String) {
-    Text(text = "Hello $name!")
-}
-
-@Preview(showBackground = true)
-@Composable
-fun DefaultPreview() {
-    ChakkiWallahTheme {
-        Greeting("Android")
-    }
-}
