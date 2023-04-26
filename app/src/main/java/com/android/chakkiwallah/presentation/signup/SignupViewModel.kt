@@ -1,4 +1,4 @@
-package com.android.chakkiwallah.presentation.login
+package com.android.chakkiwallah.presentation.signup
 
 import androidx.lifecycle.ViewModel
 import androidx.lifecycle.viewModelScope
@@ -11,33 +11,29 @@ import kotlinx.coroutines.flow.receiveAsFlow
 import kotlinx.coroutines.launch
 import javax.inject.Inject
 
+
 @HiltViewModel
-class LoginViewModel @Inject constructor(
+class SignupViewModel @Inject constructor(
     private val firebaseRepository: FirebaseRepository
 ) : ViewModel() {
 
-    private val _signInState = Channel<loginState>()
-    val signInState = _signInState.receiveAsFlow()
+    private val _signUpState = Channel<SignUpState>()
+    val signUpState = _signUpState.receiveAsFlow()
 
-    val currentUserExist = firebaseRepository.currentUserExist()
 
-    fun loginUser(user: AuthUser) = viewModelScope.launch {
-        firebaseRepository.firebaseSignIn(user).collect {result ->
-            when(result){
+    fun createUser(user: AuthUser) = viewModelScope.launch {
+        firebaseRepository.firebaseSignUp(user).collect { result ->
+            when (result) {
                 is Resource.Loading -> {
-                    _signInState.send(loginState(isLoading = true))
+                    _signUpState.send(SignUpState(isLoading = true))
                 }
                 is Resource.Success -> {
-                    _signInState.send(loginState(isSignedIn = "Signed In Successful"))
-
+                    _signUpState.send(SignUpState(isSignedUp = "Signed In Successful"))
                 }
                 is Resource.Error -> {
-                    _signInState.send(loginState(error = result.message))
+                    _signUpState.send(SignUpState(error = result.message))
                 }
             }
-
         }
     }
-
-
 }

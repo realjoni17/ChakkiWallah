@@ -1,5 +1,6 @@
 package com.android.chakkiwallah.presentation.signup
 
+import android.widget.Toast
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.fillMaxWidth
@@ -21,91 +22,146 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.text.KeyboardActions
+import androidx.compose.material.*
+import androidx.compose.runtime.*
+import androidx.compose.ui.*
+import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.focus.focusRequester
+import androidx.compose.ui.focus.onFocusChanged
+import androidx.compose.ui.platform.*
+import androidx.compose.ui.text.input.*
+import androidx.compose.ui.unit.*
+import androidx.hilt.navigation.compose.hiltViewModel
+import com.android.chakkiwallah.domain.model.AuthUser
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+
+
 @Composable
-fun Signup(onSignUpClick: () -> Unit, onBackToLoginClick: () -> Unit) {
-    var name by remember { mutableStateOf("") }
-    var phoneNo by remember { mutableStateOf("") }
-    var phoneNoError by remember { mutableStateOf(false) }
+fun SignUpScreen(signupviewmodel:SignupViewModel = hiltViewModel()) {
+    var email by remember { mutableStateOf("") }
+    var password by remember { mutableStateOf("") }
+    var passwordConfirmation by remember { mutableStateOf("") }
+    var isEmailValid by remember { mutableStateOf(false) }
+    var isPasswordValid by remember { mutableStateOf(false) }
+    var isPasswordConfirmationValid by remember { mutableStateOf(false) }
+    val focusRequesterPassword = remember { FocusRequester() }
+    val focusRequesterPasswordConfirmation = remember { FocusRequester() }
+    val state = signupviewmodel.signUpState.collectAsState(initial = null)
+
+    val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
 
     Column(
         modifier = Modifier
             .fillMaxSize()
-            .padding(horizontal = 16.dp)
-            .verticalScroll(rememberScrollState())
+            .padding(16.dp),
+        verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
-        Text(
-            text = "Create an account",
-            fontSize = 20.sp,
-            fontWeight = FontWeight.Bold,
-            modifier = Modifier.padding(vertical = 16.dp)
-        )
-        OutlinedTextField(
-            value = name,
-            onValueChange = { newName ->
-                name = newName
-            },
-            label = { Text(text = "Name") },
+        TextField(
+            value = email,
+            onValueChange = { email = it },
+            label = { Text("Email") },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Text,
+                keyboardType = KeyboardType.Email,
                 imeAction = ImeAction.Next
             ),
-            modifier = Modifier.fillMaxWidth()
+            keyboardActions = KeyboardActions(
+                onNext = { focusRequesterPassword.requestFocus() }
+            ),
+            isError = !isEmailValid
         )
-        OutlinedTextField(
-            value = phoneNo,
-            onValueChange = { newPhoneNo ->
-                phoneNo = newPhoneNo
-                phoneNoError = newPhoneNo.length != 10
-            },
-            label = { Text(text = "Enter your Phone No") },
+        TextField(
+            value = password,
+            onValueChange = { password = it },
+            label = { Text("Password") },
             keyboardOptions = KeyboardOptions(
-                keyboardType = KeyboardType.Phone,
+                imeAction = ImeAction.Next
+            ),
+            keyboardActions = KeyboardActions(
+                onNext = { focusRequesterPasswordConfirmation.requestFocus() }
+            ),
+            visualTransformation = PasswordVisualTransformation(),
+            isError = !isPasswordValid
+        )
+        /**
+        TextField(
+            value = passwordConfirmation,
+            onValueChange = { passwordConfirmation = it },
+            label = { Text("Confirm password") },
+            keyboardOptions = KeyboardOptions(
                 imeAction = ImeAction.Done
             ),
-            isError = phoneNoError,
+            keyboardActions = KeyboardActions(
+                onDone = {  }
+            ),
+            visualTransformation = PasswordVisualTransformation(),
+            isError = !isPasswordConfirmationValid,
             modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
-        )
-        if (phoneNoError) {
-            Text(
-                text = "Please enter a valid 10-digit phone number",
-                color = androidx.compose.ui.graphics.Color.Red,
-                modifier = Modifier.padding(vertical = 8.dp)
-            )
-        }
-        Button(
-            onClick = {
-                if (name.isNotEmpty() && phoneNo.length == 10) {
-                    // Handle sign up with name and phone number
-                  //  onSignUpClick(name, phoneNo)
-                } else {
-                    if (name.isEmpty()) {
-                        // Show error message for name field
-                    }
-                    if (phoneNo.length != 10) {
-                        // Show error message for phone number field
+                .focusRequester(focusRequesterPasswordConfirmation)
+                .onFocusChanged {
+                    if (it.isFocused) {
+                        isPasswordConfirmationValid = passwordConfirmation == password
                     }
                 }
-            },
-            modifier = Modifier
-                .fillMaxWidth()
-                .padding(vertical = 16.dp)
+        )
+        */
+        Button(
+            onClick =  { scope.launch(Dispatchers.Main) {
+                signupviewmodel.createUser(
+                    AuthUser(
+                        email, password
+                    )
+                )
+            }
+                       }  ,
+         //   enabled = isEmailValid && isPasswordValid && isPasswordConfirmationValid
         ) {
-            Text(text = "Sign Up")
+            Text("Sign up")
         }
-        TextButton(
-            onClick = onBackToLoginClick,
-            modifier = Modifier.fillMaxWidth()
-        ) {
-            Text(text = "Back to Login")
+    }
+
+    /**
+    fun submit() {
+        isEmailValid = email.isValidEmail()
+        isPasswordValid = password.isValidPassword()
+        isPasswordConfirmationValid = passwordConfirmation == password
+
+        if (isEmailValid && isPasswordValid && isPasswordConfirmationValid) {
+
+        }
+    }
+    */
+    LaunchedEffect(key1 = state.value?.isSignedUp) {
+        scope.launch {
+            if (state.value?.isSignedUp?.isNotEmpty() == true) {
+                val success = state.value?.isSignedUp
+                Toast.makeText(context, "$success", Toast.LENGTH_LONG).show()
+            }
+        }
+    }
+    LaunchedEffect(key1 = state.value?.error) {
+        scope.launch {
+            if (state.value?.error?.isNotBlank() == true) {
+                val error = state.value?.error
+                Toast.makeText(context, "$error", Toast.LENGTH_LONG).show()
+            }
         }
     }
 }
 
-@Preview
-@Composable
-fun SignupPreview() {
-    Signup(onSignUpClick = {  },
-    onBackToLoginClick = {})
+
+/**
+fun String.isValidEmail(): Boolean {
+    val emailRegex = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
+    return emailRegex.matches(this)
 }
+
+fun String.isValidPassword(): Boolean {
+    val passwordRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}\$")
+    return passwordRegex.matches(this)
+}
+ */
