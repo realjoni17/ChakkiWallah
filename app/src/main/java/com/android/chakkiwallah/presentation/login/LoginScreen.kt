@@ -25,13 +25,16 @@ import androidx.compose.ui.tooling.preview.Preview
 import androidx.compose.ui.unit.dp
 import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.navigation.NavController
 import com.android.chakkiwallah.domain.model.AuthUser
+import com.android.chakkiwallah.presentation.navigation.Screens
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
 @OptIn(ExperimentalComposeUiApi::class)
 @Composable
-fun LoginScreen(loginInViewModel: LoginViewModel = hiltViewModel()) {
+fun LoginScreen(loginInViewModel: LoginViewModel = hiltViewModel(),
+navController: NavController) {
     val loginstate = loginInViewModel.signInState.collectAsState(initial = null)
     val scope = rememberCoroutineScope()
     val context = LocalContext.current
@@ -121,6 +124,7 @@ fun LoginScreen(loginInViewModel: LoginViewModel = hiltViewModel()) {
                         )
                     )
                 }
+                navController.navigate(Screens.HomeScreen.route)
             },
             modifier = Modifier
                 .fillMaxWidth()
@@ -134,7 +138,8 @@ fun LoginScreen(loginInViewModel: LoginViewModel = hiltViewModel()) {
             )
         }
         TextButton(
-            onClick = { /*TODO*/ },
+            onClick = {  navController.navigate(Screens.Signup.route)
+            },
             modifier = Modifier
                 .align(Alignment.CenterHorizontally)
                 .padding(top = 24.dp)
@@ -166,9 +171,10 @@ fun LoginScreen(loginInViewModel: LoginViewModel = hiltViewModel()) {
 }
 
 
-
+/**
 @Preview
 @Composable
 fun LoginScreenPreview() {
     LoginScreen()
 }
+ */
