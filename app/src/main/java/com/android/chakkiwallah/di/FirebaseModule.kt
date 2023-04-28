@@ -35,11 +35,13 @@ object FirebaseModule{
     @Singleton
     fun providesFirebaseRepository(
         firestore: FirebaseFirestore,
-         firebasAuth: FirebaseAuth
+         firebasAuth: FirebaseAuth,
+        firebaseDatabase: FirebaseDatabase
     ): FirebaseRepository {
         return FirebaseRepositoryImpl(
             fireStore = firestore,
-            firebaseAuth = firebasAuth
+            firebaseAuth = firebasAuth,
+            firebaseRealTimeDatabase = firebaseDatabase
         )
     }
     @Provides

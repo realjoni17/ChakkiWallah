@@ -7,14 +7,17 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.android.chakkiwallah.presentation.homescreen.HomeScreen
+import com.android.chakkiwallah.presentation.homescreen.HomeScreenViewModel
 import com.android.chakkiwallah.presentation.login.LoginScreen
 import com.android.chakkiwallah.presentation.productscreen.Detail
+import com.android.chakkiwallah.presentation.productscreen.DetailViewModel
 import com.android.chakkiwallah.presentation.signup.SignUp
 
 
 @Composable
 fun NavigationGraph(
     navController: NavHostController = rememberNavController(),
+    detailViewModel: DetailViewModel
 ) {
     NavHost(
         navController = navController,
@@ -29,11 +32,11 @@ fun NavigationGraph(
 
         }
         composable(route = Screens.HomeScreen.route){
-            HomeScreen(navController = navController)
+            HomeScreen(navController = navController, productviewmodel = detailViewModel)
         }
         composable(route = Screens.Detail.route){
             Log.d("Args", it.arguments?.getString(it.toString()).toString())
-            Detail(navController = navController)
+            Detail(navController = navController, productviewmodel = detailViewModel)
         }
     }
 
