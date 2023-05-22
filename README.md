@@ -1,8 +1,8 @@
 ## Android Architecture Components:
 * [ViewModel]
 * [Android Jetpack Navigation]
-* [Compose Material 3][8]
-* [Paging][9]
+* [Jetpack Compose]
+
 
 ## Dependency Injection:
 * [Hilt for Android]
