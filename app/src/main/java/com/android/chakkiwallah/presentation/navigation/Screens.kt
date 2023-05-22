@@ -12,4 +12,6 @@ sealed class Screens(val route: String) {
 
     object Profile : Screens("profile_screen")
 
+    object Splash : Screens("spalsh_screen")
+
 }

@@ -15,6 +15,7 @@ import com.android.chakkiwallah.presentation.productscreen.Detail
 import com.android.chakkiwallah.presentation.productscreen.DetailViewModel
 import com.android.chakkiwallah.presentation.profile_screen.ProfileScreen
 import com.android.chakkiwallah.presentation.signup.SignUp
+import com.android.chakkiwallah.presentation.splash_screen.SplashScreen
 
 
 @Composable
@@ -24,7 +25,7 @@ fun NavigationGraph(
 ) {
     NavHost(
         navController = navController,
-        startDestination = Screens.LoginScreen.route
+        startDestination = Screens.Splash.route
     ) {
         composable(route = Screens.LoginScreen.route) {
             LoginScreen(navController = navController)
@@ -49,6 +50,9 @@ fun NavigationGraph(
         }
         composable(route = Screens.Profile.route){
             ProfileScreen(navController = navController)
+        }
+        composable(route = Screens.Splash.route){
+            SplashScreen(navController = navController)
         }
     }
 
