@@ -18,7 +18,10 @@ import androidx.compose.ui.unit.sp
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import coil.compose.rememberAsyncImagePainter
+import com.android.chakkiwallah.R
 import com.android.chakkiwallah.domain.model.Product
+import com.android.chakkiwallah.presentation.bottom_navbar.BottomNavItem
+import com.android.chakkiwallah.presentation.bottom_navbar.NavBar
 import com.android.chakkiwallah.presentation.navigation.Screens
 import com.android.chakkiwallah.presentation.productscreen.DetailViewModel
 
@@ -50,7 +53,26 @@ fun HomeScreenItem(product: List<Product>,
 {
 
     Scaffold(
-        topBar = { TopAppBar(title = { Text(text = "ChakkiWallah") }) }
+        topBar = { TopAppBar(title = { Text(text = "ChakkiWallah") }) },
+        bottomBar = {
+            NavBar(items = listOf(
+                BottomNavItem("Home",
+                    route = Screens.HomeScreen.route,
+                    icon = R.drawable.icons8_home),
+                BottomNavItem("Cart",
+                    route = Screens.Cart.route,
+                    icon = R.drawable.cart_icon_250952
+                ),
+                BottomNavItem("Orders",
+                route = Screens.Orders.route,
+                icon = R.drawable.order_number_icon_149906),
+                BottomNavItem("Profile", route = Screens.Profile.route,
+                icon = R.drawable._092564_about_mobile_ui_profile_ui_user_website_114033)
+
+            ), navcontroller =navController , onclick ={
+                navController.navigate(it.route)
+            } )
+        }
     ) {
         LazyColumn(modifier = Modifier.fillMaxSize()) {
             items(product.size) { item ->
@@ -89,7 +111,7 @@ fun MyCardView(
                 model = product.image,
                 contentScale = ContentScale.Crop
             ),
-            contentDescription = "Coffee"
+            contentDescription = "Items"
         )
             Text(
                 text = product.name,
