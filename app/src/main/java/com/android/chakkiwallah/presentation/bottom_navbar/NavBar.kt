@@ -18,12 +18,10 @@ import com.android.chakkiwallah.R
 @Composable
 fun NavBar(items : List<BottomNavItem>,
     navcontroller : NavController,
-onclick: (BottomNavItem) -> Unit
-           )
-{
-
-    BottomNavigation(
-        backgroundColor = colorResource(id = R.color.teal_700),
+onclick: (BottomNavItem) -> Unit)
+      {
+          BottomNavigation(
+        backgroundColor = colorResource(id = R.color.purple_700),
         contentColor = colorResource(id = R.color.black)
     ) {
         val navBackStackEntry by navcontroller.currentBackStackEntryAsState()
@@ -49,13 +47,7 @@ onclick: (BottomNavItem) -> Unit
                         }
                     }
                 }
-                )
-
-
-
-
+            )
         }
-
     }
-    
 }
