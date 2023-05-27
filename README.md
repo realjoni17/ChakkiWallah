@@ -1,7 +1,6 @@
 
 Introducing Chakkiwallah, the ultimate e-commerce app designed to revolutionize the way you shop for premium grains and flours. 
 Chakkiwallah brings the traditional charm of the neighborhood flour mill to your fingertips, allowing you to effortlessly explore and purchase a wide variety of high-quality products right from the comfort of your home.
-
 # Data Flow
 ![mvvm-pattern](https://www.oreilly.com/api/v2/epubs/9781449334840/files/httpatomoreillycomsourceoreillyimages1547825.png)
 
@@ -17,7 +16,6 @@ Chakkiwallah brings the traditional charm of the neighborhood flour mill to your
 |:---------------------------------:|:--------------------------------:|
 | <img src = "/Assets/product.png"> | <img src = "/Assets/splash.png"> |             
 
-
 # Tech-Stack Used
 -Kotlin\
 -Jetpack Compose<br />
@@ -28,4 +26,5 @@ Chakkiwallah brings the traditional charm of the neighborhood flour mill to your
 
 ## Wanna test app
 [app](https://github.com/realjoni17/ChakkiWallah/blob/master/Assets/app-debug.apk)
+
 
