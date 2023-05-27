@@ -1,6 +1,7 @@
 package com.android.chakkiwallah.presentation.signup
 
 import android.widget.Toast
+import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.Column
 import androidx.compose.foundation.layout.fillMaxSize
 import androidx.compose.foundation.layout.padding
@@ -12,16 +13,22 @@ import androidx.compose.ui.Modifier
 import androidx.compose.ui.text.input.ImeAction
 import androidx.compose.ui.text.input.KeyboardType
 import androidx.compose.ui.unit.dp
-
 import androidx.compose.foundation.layout.*
 import androidx.compose.foundation.text.KeyboardActions
 import androidx.compose.material.*
+import androidx.compose.ui.Alignment
 import androidx.compose.ui.focus.FocusRequester
+import androidx.compose.ui.graphics.vector.ImageVector
+import androidx.compose.ui.graphics.vector.rememberVectorPainter
 import androidx.compose.ui.platform.*
+import androidx.compose.ui.res.vectorResource
 import androidx.compose.ui.text.input.*
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import coil.compose.rememberAsyncImagePainter
+import com.android.chakkiwallah.R
 import com.android.chakkiwallah.domain.model.AuthUser
+import com.android.chakkiwallah.presentation.navigation.Screens
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -49,6 +56,12 @@ fun SignUp(signupviewmodel:SignupViewModel = hiltViewModel(),
             .padding(16.dp),
         verticalArrangement = Arrangement.spacedBy(16.dp)
     ) {
+
+        Image(imageVector = ImageVector.vectorResource(id = R.drawable.undraw_sign_up_n6im),
+            contentDescription = "",
+        alignment = Alignment.Center
+        )
+
         TextField(
             value = email,
             onValueChange = { email = it },
@@ -60,7 +73,8 @@ fun SignUp(signupviewmodel:SignupViewModel = hiltViewModel(),
             keyboardActions = KeyboardActions(
                 onNext = { focusRequesterPassword.requestFocus() }
             ),
-            isError = !isEmailValid
+            isError = !isEmailValid,
+            modifier = Modifier.fillMaxWidth()
         )
         TextField(
             value = password,
@@ -73,7 +87,8 @@ fun SignUp(signupviewmodel:SignupViewModel = hiltViewModel(),
                 onNext = { focusRequesterPasswordConfirmation.requestFocus() }
             ),
             visualTransformation = PasswordVisualTransformation(),
-            isError = !isPasswordValid
+            isError = !isPasswordValid,
+            modifier = Modifier.fillMaxWidth()
         )
         /**
         TextField(
@@ -106,9 +121,14 @@ fun SignUp(signupviewmodel:SignupViewModel = hiltViewModel(),
                 )
             }
                        }  ,
+            modifier = Modifier.fillMaxWidth()
          //   enabled = isEmailValid && isPasswordValid && isPasswordConfirmationValid
         ) {
             Text("Sign up")
+        }
+        TextButton(onClick = { navController.navigate(Screens.LoginScreen.route) },
+            modifier = Modifier.align(Alignment.CenterHorizontally)) {
+            Text(text = "Already having an account? Login")
         }
     }
 

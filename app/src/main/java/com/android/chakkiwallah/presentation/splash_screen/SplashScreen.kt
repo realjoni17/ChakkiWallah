@@ -8,7 +8,7 @@ import com.android.chakkiwallah.presentation.navigation.Screens
 @Composable
 fun SplashScreen(navController: NavController) {
     LaunchedEffect(key1 = true ){
-        navController.navigate(Screens.HomeScreen.route){
+        navController.navigate(Screens.LoginScreen.route){
             popUpTo(Screens.Splash.route){
                 inclusive = true
             }

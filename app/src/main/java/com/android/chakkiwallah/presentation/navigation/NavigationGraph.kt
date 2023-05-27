@@ -8,7 +8,6 @@ import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.android.chakkiwallah.presentation.cart.CartScreen
 import com.android.chakkiwallah.presentation.homescreen.HomeScreen
-import com.android.chakkiwallah.presentation.homescreen.HomeScreenViewModel
 import com.android.chakkiwallah.presentation.login.LoginScreen
 import com.android.chakkiwallah.presentation.order_screen.OrderScreen
 import com.android.chakkiwallah.presentation.productscreen.Detail
@@ -40,7 +39,7 @@ fun NavigationGraph(
         }
         composable(route = Screens.Detail.route){
             Log.d("Args", it.arguments?.getString(it.toString()).toString())
-            Detail(navController = navController, productviewmodel = detailViewModel)
+            Detail(navController = navController, viewModel = detailViewModel)
         }
         composable(route = Screens.Cart.route){
             CartScreen(navController = navController)
