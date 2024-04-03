@@ -141,7 +141,7 @@ private val firebaseAuth: FirebaseAuth,
                     committed: Boolean,
                     currentData: DataSnapshot?
                 ) {
-                    Log.d("Completeddd", "onComplete: ${error?.message}")
+                    Log.d("Completed", "onComplete: ${error?.message}")
                 }
             })
         }.addOnFailureListener {

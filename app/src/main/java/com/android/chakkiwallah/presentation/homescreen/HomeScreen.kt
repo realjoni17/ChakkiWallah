@@ -34,7 +34,7 @@ import com.android.chakkiwallah.presentation.productscreen.DetailViewModel
 @Composable
 
 fun HomeScreen(homescreenviewModel:HomeScreenViewModel = hiltViewModel(),
-navController: NavController,productviewmodel: DetailViewModel){
+navController: NavController,productviewmodel: DetailViewModel) {
 
     val state = homescreenviewModel.getAllProducts.collectAsState()
     HomeScreenItem(product = state.value.product!! ,

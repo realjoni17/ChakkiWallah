@@ -9,6 +9,7 @@ import androidx.navigation.compose.rememberNavController
 import com.android.chakkiwallah.presentation.cart.CartScreen
 import com.android.chakkiwallah.presentation.homescreen.HomeScreen
 import com.android.chakkiwallah.presentation.login.LoginScreen
+import com.android.chakkiwallah.presentation.main_screen.MainScreen
 import com.android.chakkiwallah.presentation.order_screen.OrderScreen
 import com.android.chakkiwallah.presentation.productscreen.Detail
 import com.android.chakkiwallah.presentation.productscreen.DetailViewModel
@@ -35,7 +36,7 @@ fun NavigationGraph(
 
         }
         composable(route = Screens.HomeScreen.route){
-            HomeScreen(navController = navController, productviewmodel = detailViewModel)
+          HomeScreen(navController = navController, productviewmodel = DetailViewModel())
         }
         composable(route = Screens.Detail.route){
             Log.d("Args", it.arguments?.getString(it.toString()).toString())
@@ -53,6 +54,10 @@ fun NavigationGraph(
         composable(route = Screens.Splash.route){
             SplashScreen(navController = navController)
         }
+        composable(route = Screens.MainScreen.route){
+            MainScreen(navController = navController, viewmodel = DetailViewModel())
+        }
+
     }
 
 }
