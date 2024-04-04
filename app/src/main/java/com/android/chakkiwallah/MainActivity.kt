@@ -18,20 +18,18 @@ import dagger.hilt.android.AndroidEntryPoint
 
 @AndroidEntryPoint
 class MainActivity : ComponentActivity() {
-
     private val productDetailViewModel = viewModels<DetailViewModel>()
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContent {
             ChakkiWallahTheme {
-
                 Surface(
                     modifier = Modifier.fillMaxSize(),
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-              NavigationGraph(navController = navController, detailViewModel = productDetailViewModel.value)
-
+              NavigationGraph(navController = navController,
+                  detailViewModel = productDetailViewModel.value)
                 }
             }
         }
