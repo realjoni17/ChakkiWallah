@@ -8,10 +8,8 @@ import dagger.hilt.android.lifecycle.HiltViewModel
 import javax.inject.Inject
 
 @HiltViewModel
-class DetailViewModel@Inject constructor(
-
-) : ViewModel() {
-    private val _product = mutableStateOf(Product())
+class DetailViewModel @Inject constructor() : ViewModel() {
+    private val _product = mutableStateOf(Product()) // Default Product
     val product: State<Product> = _product
 
     fun setProduct(product: Product) {

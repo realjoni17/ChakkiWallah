@@ -90,28 +90,7 @@ fun SignUp(signupviewmodel:SignupViewModel = hiltViewModel(),
             isError = !isPasswordValid,
             modifier = Modifier.fillMaxWidth()
         )
-        /**
-        TextField(
-            value = passwordConfirmation,
-            onValueChange = { passwordConfirmation = it },
-            label = { Text("Confirm password") },
-            keyboardOptions = KeyboardOptions(
-                imeAction = ImeAction.Done
-            ),
-            keyboardActions = KeyboardActions(
-                onDone = {  }
-            ),
-            visualTransformation = PasswordVisualTransformation(),
-            isError = !isPasswordConfirmationValid,
-            modifier = Modifier
-                .focusRequester(focusRequesterPasswordConfirmation)
-                .onFocusChanged {
-                    if (it.isFocused) {
-                        isPasswordConfirmationValid = passwordConfirmation == password
-                    }
-                }
-        )
-        */
+
         Button(
             onClick =  { scope.launch(Dispatchers.Main) {
                 signupviewmodel.createUser(
@@ -132,17 +111,7 @@ fun SignUp(signupviewmodel:SignupViewModel = hiltViewModel(),
         }
     }
 
-    /**
-    fun submit() {
-        isEmailValid = email.isValidEmail()
-        isPasswordValid = password.isValidPassword()
-        isPasswordConfirmationValid = passwordConfirmation == password
 
-        if (isEmailValid && isPasswordValid && isPasswordConfirmationValid) {
-
-        }
-    }
-    */
     LaunchedEffect(key1 = state.value?.isSignedUp) {
         scope.launch {
             if (state.value?.isSignedUp?.isNotEmpty() == true) {
@@ -162,14 +131,3 @@ fun SignUp(signupviewmodel:SignupViewModel = hiltViewModel(),
 }
 
 
-/**
-fun String.isValidEmail(): Boolean {
-    val emailRegex = Regex("[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\\.[a-zA-Z]{2,}")
-    return emailRegex.matches(this)
-}
-
-fun String.isValidPassword(): Boolean {
-    val passwordRegex = Regex("^(?=.*[A-Za-z])(?=.*\\d)[A-Za-z\\d]{8,}\$")
-    return passwordRegex.matches(this)
-}
- */

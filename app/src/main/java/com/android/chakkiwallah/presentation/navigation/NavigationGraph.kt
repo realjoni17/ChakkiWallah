@@ -7,12 +7,15 @@ import androidx.navigation.compose.NavHost
 import androidx.navigation.compose.composable
 import androidx.navigation.compose.rememberNavController
 import com.android.chakkiwallah.presentation.cart.CartScreen
+
 import com.android.chakkiwallah.presentation.homescreen.HomeScreen
 import com.android.chakkiwallah.presentation.login.LoginScreen
-import com.android.chakkiwallah.presentation.order_screen.OrderScreen
+import com.android.chakkiwallah.presentation.order_screen.OrderListScreen
+import com.android.chakkiwallah.presentation.order_screen.OrderViewModel
 import com.android.chakkiwallah.presentation.productscreen.Detail
 import com.android.chakkiwallah.presentation.productscreen.DetailViewModel
-import com.android.chakkiwallah.presentation.profile_screen.ProfileScreen
+import com.android.chakkiwallah.presentation.profile_screen.UserProfileScreen
+import com.android.chakkiwallah.presentation.profile_screen.UserViewModel
 import com.android.chakkiwallah.presentation.signup.SignUp
 import com.android.chakkiwallah.presentation.splash_screen.SplashScreen
 
@@ -42,13 +45,14 @@ fun NavigationGraph(
             Detail(navController = navController, viewModel = detailViewModel)
         }
         composable(route = Screens.Cart.route){
-            CartScreen(navController = navController)
+            CartScreen(  navController = navController)
         }
         composable(route = Screens.Orders.route){
-            OrderScreen(navController = navController)
+           OrderListScreen()
         }
         composable(route = Screens.Profile.route){
-            ProfileScreen(navController = navController)
+            UserProfileScreen(userViewModel = UserViewModel(),
+                onLogoutClick = { /*TODO*/ }, navController = navController)
         }
         composable(route = Screens.Splash.route){
             SplashScreen(navController = navController)

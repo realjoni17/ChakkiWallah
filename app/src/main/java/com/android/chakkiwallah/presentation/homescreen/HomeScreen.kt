@@ -1,5 +1,7 @@
 package com.android.chakkiwallah.presentation.homescreen
 
+
+import HomeScreenView
 import android.annotation.SuppressLint
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.clickable
@@ -19,9 +21,8 @@ import coil.compose.rememberAsyncImagePainter
 import com.android.chakkiwallah.R
 import com.android.chakkiwallah.domain.model.Product
 import com.android.chakkiwallah.presentation.bottom_navbar.BottomNavItem
-import com.android.chakkiwallah.presentation.bottom_navbar.NavBar
+
 import com.android.chakkiwallah.presentation.homescreen.components.CardView
-import com.android.chakkiwallah.presentation.homescreen.components.HomeScreenItem
 import com.android.chakkiwallah.presentation.navigation.Screens
 import com.android.chakkiwallah.presentation.productscreen.DetailViewModel
 
@@ -37,9 +38,13 @@ fun HomeScreen(homescreenviewModel:HomeScreenViewModel = hiltViewModel(),
 navController: NavController,productviewmodel: DetailViewModel){
 
     val state = homescreenviewModel.getAllProducts.collectAsState()
-    HomeScreenItem(product = state.value.product!! ,
-        navController = navController,
-        productviewmodel =  productviewmodel)
-}
+
+        HomeScreenView(products = state.value.product!! ,
+            navController = navController,
+            detailViewModel =  productviewmodel)
+    }
+
+
+
 
 

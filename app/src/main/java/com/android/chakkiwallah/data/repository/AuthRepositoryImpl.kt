@@ -23,7 +23,7 @@ class AuthRepositoryImpl @Inject constructor(
         "photoUrl" to photoUrl?.toString(),
         "createDate" to serverTimestamp()
     )
-
+ val userId = firebaseAuth.currentUser?.uid
 
     override suspend fun addUserToFireStore() {
         firebaseAuth.currentUser?.apply {
@@ -48,6 +48,10 @@ class AuthRepositoryImpl @Inject constructor(
                 emit(Resource.Error(it.message.toString()))
             }
         }
+
+    override fun userId(): String? {
+        return firebaseAuth.currentUser?.uid
+    }
 
 
 }

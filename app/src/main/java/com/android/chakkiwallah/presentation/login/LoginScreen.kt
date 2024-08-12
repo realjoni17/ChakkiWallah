@@ -174,10 +174,3 @@ navController: NavController) {
 }
 
 
-/**
-@Preview
-@Composable
-fun LoginScreenPreview() {
-    LoginScreen()
-}
- */

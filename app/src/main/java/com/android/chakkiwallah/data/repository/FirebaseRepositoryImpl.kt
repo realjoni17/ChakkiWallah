@@ -28,6 +28,8 @@ import kotlinx.coroutines.flow.catch
 import kotlinx.coroutines.flow.flow
 
 import kotlinx.coroutines.tasks.await
+import kotlinx.serialization.json.JsonObject
+import org.json.JSONObject
 import javax.inject.Inject
 
 class FirebaseRepositoryImpl @Inject constructor(
@@ -35,6 +37,9 @@ class FirebaseRepositoryImpl @Inject constructor(
 private val firebaseAuth: FirebaseAuth,
     private val firebaseRealTimeDatabase: FirebaseDatabase
 ) : FirebaseRepository {
+
+
+
     override fun firebaseSignIn(user: AuthUser): Flow<Resource<String>> = callbackFlow {
         trySend(Resource.Loading())
         trySend(Resource.Loading())
@@ -75,7 +80,7 @@ private val firebaseAuth: FirebaseAuth,
         }
     }
 
-    override fun addCoffeeToCart(cartProduct: Cart, userId: String): Flow<Resource<Task<Void>>> {
+    override fun addProductToCart(cartProduct: Product, userId: String): Flow<Resource<Task<Void>>> {
         return flow {
             emit(Resource.Loading())
             val result = fireStore.collection("user_collection").document(userId)
@@ -86,7 +91,7 @@ private val firebaseAuth: FirebaseAuth,
         }
     }
 
-    override fun deleteCoffeeFromCart(userId: String, cartProduct: Cart): Resource<Task<Void>> {
+    override fun deleteProductFromCart(userId: String, cartProduct: Cart): Resource<Task<Void>> {
         return try {
             val result = fireStore.collection(USER_COLLECTION).document(userId)
                 .update(CART_PRODUCTS_FIELD, FieldValue.arrayRemove(cartProduct))
@@ -157,10 +162,69 @@ private val firebaseAuth: FirebaseAuth,
         return firebaseAuth.signOut()
     }
 
+    override fun uid(): String? {
+      return  firebaseAuth.currentUser?.uid
+    }
+
+
     private val userCartCollection = currentUser()?.uid?.let {
         fireStore.collection(USER_COLLECTION)
     }
+    override fun getCartItems(userId: String): Flow<Resource<List<Product>>> {
+        return flow {
+            emit(Resource.Loading())
+            val documentSnapshot = fireStore.collection("user_collection").document(userId).get().await()
+
+            val cartProducts = documentSnapshot.get("cartProducts") as? List<Map<String, Any>> ?: emptyList()
+
+            // Map the retrieved data to Product objects
+            val products = cartProducts.map { data ->
+                Product(
+                    id = data["id"] as String,
+                    name = data["name"] as String,
+                    price = (data["price"] as Number).toDouble(),
+                    quantity = (data["quantity"] as? Number)?.toInt() ?: 1
+                )
+            }
+
+            emit(Resource.Success(products))
+        }.catch { exception ->
+            emit(Resource.Error(exception.message.toString()))
+        }
+    }
+
+    override fun updateProductQuantity(userId: String, productId: String, newQuantity: Int): Flow<Resource<Void>> {
+        return flow {
+            emit(Resource.Loading())
+
+            // Update the quantity in Firestore
+            val result = fireStore.collection("user_collection").document(userId)
+                .update("cartProducts", FieldValue.arrayRemove(Product(productId, "", 0.0, 0))) // Remove old product
+                .await() // Await the completion of the previous operation
+
+            // Add the updated product with new quantity
+            val updatedProduct = Product(productId, "", 0.0, newQuantity) // Adjust fields as necessary
+            fireStore.collection("user_collection").document(userId)
+                .update("cartProducts", FieldValue.arrayUnion(updatedProduct)) // Add updated product
+                .await()
+
+            emit(Resource.Success(result))
+        }.catch { exception ->
+            emit(Resource.Error(exception.message.toString()))
+        }
+    }
+    override fun calculateTotalPrice(products: List<Product>): Double {
+        return products.sumOf { it.price * it.quantity }
+    }
+
+   override fun savePaymentData( paymentData: JSONObject, userId: String) {
+       fireStore.collection("user_collection").document(userId).collection("payments").add(paymentData)
+            .addOnSuccessListener {  Log.d("Vaani", "Payment data saved successfully: $paymentData") }
+            .addOnFailureListener {  exception ->
+                Log.e("Vaani", "Error saving payment data: ${exception.message}", exception) }
+    }
 }
+
 
 
 

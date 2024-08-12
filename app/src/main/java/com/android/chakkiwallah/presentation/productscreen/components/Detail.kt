@@ -3,6 +3,7 @@ package com.android.chakkiwallah.presentation.productscreen
 import androidx.compose.runtime.Composable
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
+import com.android.chakkiwallah.domain.repository.AuthRepository
 import com.android.chakkiwallah.presentation.productscreen.components.Productlist
 
 @Composable

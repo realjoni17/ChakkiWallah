@@ -16,4 +16,5 @@ interface AuthRepository {
             user: AuthUser
         ): Flow<Resource<AuthResult>>
 
+        fun userId() : String?
     }

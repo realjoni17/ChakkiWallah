@@ -57,7 +57,7 @@ fun CardView(
                 color = Color.Black
             )
             Text(
-                text = product.price,
+                text = product.price.toString(),
                 style = MaterialTheme.typography.h6,
                 color = Color.Black
             )

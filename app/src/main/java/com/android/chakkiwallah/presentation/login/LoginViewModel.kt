@@ -20,6 +20,7 @@ class LoginViewModel @Inject constructor(
     val signInState = _signInState.receiveAsFlow()
 
     val currentUserExist = firebaseRepository.currentUserExist()
+    val uid = firebaseRepository.uid()
 
     fun loginUser(user: AuthUser) = viewModelScope.launch {
         firebaseRepository.firebaseSignIn(user).collect {result ->
