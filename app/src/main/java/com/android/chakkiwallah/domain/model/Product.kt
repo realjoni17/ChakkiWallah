@@ -16,7 +16,7 @@ import kotlinx.serialization.Serializable
 data class Product(
     val id: String = "",
     val name: String = "",
-    val price: Double = 1.0,
+    val price: Double = 0.0,
     var quantity: Int = 1 ,// Default quantity is 1
     val image: String? = "",
     val description: String?  = "",

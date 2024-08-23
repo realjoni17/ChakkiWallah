@@ -1,6 +1,7 @@
 package com.android.chakkiwallah
 
 import NavBar
+import PhoneAuthScreen
 import android.annotation.SuppressLint
 import android.content.Intent
 import android.os.Bundle
@@ -19,8 +20,8 @@ import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.android.chakkiwallah.domain.model.Product
+
 import com.android.chakkiwallah.presentation.bottom_navbar.BottomNavItem
-import com.android.chakkiwallah.presentation.login.LoginScreen
 import com.android.chakkiwallah.presentation.login.LoginViewModel
 import com.android.chakkiwallah.presentation.navigation.NavigationGraph
 import com.android.chakkiwallah.presentation.navigation.Screens
@@ -51,16 +52,15 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
                     color = MaterialTheme.colors.background
                 ) {
                     val navController = rememberNavController()
-                    Scaffold(bottomBar = { NavBar(items = items, navController = navController) }, topBar = {
-                        Text(
-                            text = "ChakkiWallah"
-                        )
-                    }) {
+
 
                         NavigationGraph(
                             navController = navController,
                             detailViewModel = productDetailViewModel.value
                         )
+                  //  val viewModel = viewModels<AuthViewModel>()
+                  //  PhoneAuthScreen(viewModel.value)
+                 //  PhoneAuthScreen()
 
                     }
 
@@ -68,7 +68,8 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
                 }
             }
         }
-    }
+
+
 
 
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
@@ -89,7 +90,7 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
         if (uid != null) {
             viewModel.value.transferCartToOrders(uid, paymentId ?: "")
         }
-        Log.d("Vaani", "Payment successful: $paymentId")
+        Log.d("", "Payment successful: $paymentId")
         // Handle success
     }
 

@@ -20,13 +20,21 @@ import com.android.chakkiwallah.presentation.navigation.Screens
 import com.android.chakkiwallah.presentation.productscreen.DetailViewModel
 
 
+import androidx.compose.foundation.Image
+import androidx.compose.foundation.clickable
+import androidx.compose.foundation.layout.*
+import androidx.compose.foundation.shape.RoundedCornerShape
+
+import androidx.compose.ui.text.style.TextOverflow
+import androidx.compose.ui.unit.dp
+
+
 @Composable
 fun CardView(
     product: Product,
     productviewmodel: DetailViewModel = hiltViewModel(),
     navController: NavController
 ) {
-
     Card(
         modifier = Modifier
             .padding(8.dp)
@@ -35,29 +43,39 @@ fun CardView(
                 productviewmodel.setProduct(product)
                 navController.navigate(Screens.Detail.route)
             },
-        elevation = 8.dp
+        elevation = 8.dp,
+        shape = RoundedCornerShape(8.dp) // Rounded corners for better aesthetics
     ) {
         Column(
-            modifier = Modifier.padding(16.dp)
+            modifier = Modifier.padding(16.dp),
+            horizontalAlignment = Alignment.CenterHorizontally // Center align items
         ) {
+            // Product Image
             Image(
-            modifier = Modifier
-                .align(Alignment.CenterHorizontally)
-                .height(100.dp)
-                .width(100.dp),
-            painter = rememberAsyncImagePainter(
-                model = product.image,
-                contentScale = ContentScale.Crop
-            ),
-            contentDescription = "Items"
-        )
+                modifier = Modifier
+                    .height(100.dp)
+                    .width(100.dp),
+                painter = rememberAsyncImagePainter(
+                    model = product.image,
+                    contentScale = ContentScale.Crop
+                ),
+                contentDescription = product.name // Use product name for better accessibility
+            )
+
+            Spacer(modifier = Modifier.height(8.dp))
+
+            // Product Name
             Text(
                 text = product.name,
                 style = MaterialTheme.typography.h6,
-                color = Color.Black
+                color = Color.Black,
+                maxLines = 1,
+                overflow = TextOverflow.Ellipsis // Handle long names
             )
+
+            // Product Price
             Text(
-                text = product.price.toString(),
+                text = "₹${product.price}", // Format price
                 style = MaterialTheme.typography.h6,
                 color = Color.Black
             )

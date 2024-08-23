@@ -42,7 +42,7 @@ fun CartScreen(
     val uid = loginViewModel.uid
 
     // Calculate the total price based on the current cart items
-    val totalPrice = when (cartItemsResource) {
+    val totalPrice : Double = when (cartItemsResource) {
         is Resource.Success -> {
             cartItemsResource.data?.sumOf { it.price * it.quantity } ?: 0.0
         }
@@ -81,13 +81,13 @@ fun CartScreen(
                 Spacer(modifier = Modifier.height(16.dp))
 
                 Text(
-                    text = "Total: $${"%.2f".format(totalPrice)}",
+                    text = "Total: ₹${"%.2f".format(totalPrice)}",
                     style = MaterialTheme.typography.h6
                 )
 
                 Button(
                     onClick ={
-                        paymentViewModel.initiatePayment(navController.context, Product(name = "Total Payment", price = totalPrice), totalPrice)
+                        paymentViewModel.initiatePayment(navController.context, Product(name = "Total Payment", price = totalPrice), totalPrice.toInt())
 
                     },
                     modifier = Modifier

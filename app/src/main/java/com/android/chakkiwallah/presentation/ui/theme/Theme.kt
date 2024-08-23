@@ -29,11 +29,9 @@ private val LightColorPalette = lightColors(
 
 @Composable
 fun ChakkiWallahTheme(darkTheme: Boolean = isSystemInDarkTheme(), content: @Composable () -> Unit) {
-    val colors = if (darkTheme) {
+    val colors =   
         DarkColorPalette
-    } else {
-        LightColorPalette
-    }
+
 
     MaterialTheme(
         colors = colors,

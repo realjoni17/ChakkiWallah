@@ -114,7 +114,7 @@ fun OrderItem(order: Order, onDeliveryStatusChanged: (Boolean) -> Unit) {
 fun ProductItem(product: Product) {
     Column(modifier = Modifier.padding(4.dp)) {
         Text(text = "Name: ${product.name}")
-        Text(text = "Price: $${product.price}")
+        Text(text = "Price: ₹${product.price}")
         Text(text = "Quantity: ${product.quantity}")
         Divider()
     }

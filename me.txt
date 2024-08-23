@@ -1,0 +1,9 @@
+// develop cart
+
+//add product to cart
+//calculate all billing in cart
+//checkout payment
+//show order status
+//notification
+//add animations to screen transition
+//upgrade gradle

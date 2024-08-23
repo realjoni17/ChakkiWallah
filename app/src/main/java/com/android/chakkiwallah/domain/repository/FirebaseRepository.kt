@@ -29,12 +29,7 @@ interface FirebaseRepository {
 
     fun currentUser(): FirebaseUser?
 
-    suspend fun addOrders(
-        orderList: MutableList<Index.IndexField.Order>, onSuccess: () -> Unit,
-        onFailure: (String?) -> Unit,
-    )
-
-   // fun increaseProductQuantity(documentId: String): Task<Transaction>
+    // fun increaseProductQuantity(documentId: String): Task<Transaction>
 
     fun userLogOut()
 
@@ -47,5 +42,9 @@ interface FirebaseRepository {
     fun calculateTotalPrice(products: List<Product>): Double
 
     fun savePaymentData(paymentData: JSONObject, userId: String)
+
+    fun getUserDetails(userId: String): Flow<Resource<AuthUser>>
+
+
 
 }
