@@ -25,6 +25,7 @@ import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.NavController
 import com.android.chakkiwallah.common.Resource
 import com.android.chakkiwallah.domain.model.Product
+import com.android.chakkiwallah.presentation.animation.LoadingScreen
 import com.android.chakkiwallah.presentation.login.LoginViewModel
 import com.android.chakkiwallah.presentation.payment.PaymentViewModel
 
@@ -64,7 +65,7 @@ fun CartScreen(
         when (cartItemsResource) {
             is Resource.Loading -> {
                 // Show loading indicator
-                CircularProgressIndicator()
+                LoadingScreen()
             }
             is Resource.Success -> {
                 // Update UI with cart items

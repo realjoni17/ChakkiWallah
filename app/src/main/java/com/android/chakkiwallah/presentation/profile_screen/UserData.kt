@@ -1,173 +1,167 @@
-package com.android.chakkiwallah.presentation.profile_screen
-
-
-import androidx.activity.compose.rememberLauncherForActivityResult
-
-import androidx.compose.foundation.Image
-import androidx.compose.foundation.layout.*
-import androidx.compose.material.*
-import androidx.compose.runtime.*
-
-import androidx.compose.ui.Modifier
-import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
-import androidx.compose.ui.text.input.PasswordVisualTransformation
-import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.android.chakkiwallah.common.Resource
-
-import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.StorageReference
-import java.io.InputStream
-import android.content.ContentResolver
-import android.graphics.Bitmap
-import android.graphics.BitmapFactory
+import android.app.Activity
+import android.content.Context
+import android.content.Intent
 import android.net.Uri
-import android.widget.Toast
-import androidx.activity.ComponentActivity
+import androidx.activity.compose.rememberLauncherForActivityResult
 import androidx.compose.foundation.Image
 import androidx.compose.foundation.layout.*
 import androidx.compose.material.*
 import androidx.compose.runtime.*
 import androidx.compose.ui.Alignment
 import androidx.compose.ui.graphics.asImageBitmap
-import androidx.compose.ui.platform.LocalContext
 import androidx.compose.ui.unit.dp
-import androidx.lifecycle.viewmodel.compose.viewModel
-import com.android.chakkiwallah.domain.model.AuthUser
-
-import androidx.activity.result.launch
-import androidx.activity.result.ActivityResultLauncher
-import androidx.activity.result.contract.ActivityResultContracts
 import androidx.hilt.navigation.compose.hiltViewModel
+import androidx.lifecycle.viewmodel.compose.viewModel
+import coil.compose.rememberImagePainter
+import androidx.activity.result.contract.ActivityResultContracts
+import androidx.compose.ui.Modifier
+import androidx.compose.ui.platform.LocalContext
+import com.android.chakkiwallah.common.Resource
 import com.android.chakkiwallah.domain.model.User
 import com.android.chakkiwallah.presentation.login.LoginViewModel
+import com.android.chakkiwallah.presentation.profile_screen.UserViewModel
 import kotlinx.coroutines.launch
-
+import com.google.firebase.storage.FirebaseStorage
+import kotlinx.coroutines.tasks.await
+import java.io.InputStream
 
 
 @Composable
-fun InsertUser(
-    onDismiss: () -> Unit,
-    userViewModel: UserViewModel = hiltViewModel(),
-    loginViewModel: LoginViewModel = hiltViewModel()
+fun EditProfile(
+    loginViewModel: LoginViewModel = hiltViewModel(),
+    userViewModel: UserViewModel = hiltViewModel()
 ) {
+    val userId: String = loginViewModel.uid!!
+    val userDataState = userViewModel.userData.collectAsState()
     var name by remember { mutableStateOf("") }
     var phoneNumber by remember { mutableStateOf("") }
     var address by remember { mutableStateOf("") }
     var imageUri by remember { mutableStateOf<Uri?>(null) }
     var loading by remember { mutableStateOf(false) }
-    val uid = loginViewModel.uid ?: ""
-    val context = LocalContext.current
-    val userDataState = userViewModel.userData.collectAsState()
     val scope = rememberCoroutineScope()
+    val context = LocalContext.current
+
     // Image picker launcher
-    val imagePickerLauncher = rememberLauncherForActivityResult(
-        contract = ActivityResultContracts.GetContent()
-    ) { uri: Uri? ->
+    val imagePickerLauncher = rememberLauncherForActivityResult(ActivityResultContracts.GetContent()) { uri: Uri? ->
         imageUri = uri
     }
 
-    AlertDialog(
-        onDismissRequest = { onDismiss() },
-        title = { Text("Insert User Data") },
-        text = {
-            Column(modifier = Modifier.fillMaxWidth()) {
-                imageUri?.let {
-                    val bitmap = it.toBitmap(context.contentResolver)
-                    bitmap?.let { bmp ->
-                        Image(
-                            bitmap = bmp.asImageBitmap(),
-                            contentDescription = null,
-                            modifier = Modifier
-                                .size(100.dp)
-                                .align(Alignment.CenterHorizontally)
-                        )
-                    }
-                }
+    LaunchedEffect(userId) {
+        userViewModel.getUserData(userId)
+    }
 
-                Button(onClick = { imagePickerLauncher.launch("image/*") }) {
-                    Text("Select Image")
-                }
-
-                TextField(value = name, onValueChange = { name = it }, label = { Text("Name") })
-                TextField(value = phoneNumber, onValueChange = { phoneNumber = it }, label = { Text("Phone Number") })
-                TextField(value = address, onValueChange = { address = it }, label = { Text("Address") })
-
-                when (userDataState.value) {
-                    is Resource.Loading -> CircularProgressIndicator()
-                    is Resource.Error -> {
-                        Text(text = "Error: ${(userDataState.value as Resource.Error).message}", color = MaterialTheme.colors.error)
-                    }
-
-                    is Resource.Success -> {
-                        val user = (userDataState.value as Resource.Success<User?>).data
-                        // Handle the success case, e.g., show user data
-                        user?.let {
-                            Text("User saved successfully: ${it.name}")
-                        }
-                    }
-                }
-            }
-        },
-        confirmButton = {
-            Button(onClick = {
-                loading = true
-                val registeredUid = uid
-
-                // Validate inputs
-                if (name.isEmpty() || phoneNumber.isEmpty() || address.isEmpty() || imageUri == null) {
-                    Toast.makeText(context, "Please fill all fields and select an image", Toast.LENGTH_SHORT).show()
-                    loading = false
-                    return@Button
-                }
-
-                // Upload image and save user data
-
-                scope.launch {
-                    try {
-                        val imageUrl = userViewModel.uploadProfilePic(imageUri!!, registeredUid) // Ensure imageUri is not null
-                        val authUser = imageUrl?.let {
-                            User(
-                                name = name,
-                                phoneNumber = phoneNumber,
-                                address = address,
-                                profilePicUrl = it
-                            )
-                        }
-
-                        if (authUser != null) {
-                            userViewModel.saveUserData(authUser, registeredUid)
-                        }
-                        Toast.makeText(context, "User saved successfully", Toast.LENGTH_SHORT).show()
-                    } catch (e: Exception) {
-                        Toast.makeText(context, "Error: ${e.message}", Toast.LENGTH_LONG).show()
-                    } finally {
-                        loading = false
-                        onDismiss() // Dismiss dialog after completion
-                    }
-                }
-            }) {
-                Text("Save")
-            }
-        },
-        dismissButton = {
-            Button(onClick = { onDismiss() }) {
-                Text("Cancel")
+    when (userDataState.value) {
+        is Resource.Loading -> {
+            CircularProgressIndicator()
+        }
+        is Resource.Error -> {
+            Text("Error: ${(userDataState.value as Resource.Error).message}")
+        }
+        is Resource.Success -> {
+            val user = (userDataState.value as Resource.Success<User?>).data
+            user?.let {
+                name = it.name
+                phoneNumber = it.phoneNumber
+                address = it.address
+                imageUri = Uri.parse(it.profilePicUrl) // Assuming profilePicUrl is a valid URI
             }
         }
-    )
-}
+    }
 
-// Extension function to convert Uri to Bitmap
-fun Uri.toBitmap(contentResolver: ContentResolver): Bitmap? {
-    return try {
-        val inputStream = contentResolver.openInputStream(this)
-        BitmapFactory.decodeStream(inputStream)
-    } catch (e: Exception) {
-        e.printStackTrace()
-        null
+    Column(modifier = Modifier.padding(16.dp)) {
+        Text("Edit Profile", style = MaterialTheme.typography.h6)
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        TextField(
+            value = name,
+            onValueChange = { name = it },
+            label = { Text("Name") }
+        )
+        TextField(
+            value = phoneNumber,
+            onValueChange = { phoneNumber = it },
+            label = { Text("Phone Number") }
+        )
+        TextField(
+            value = address,
+            onValueChange = { address = it },
+            label = { Text("Address") }
+        )
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        imageUri?.let {
+            Image(
+                painter = rememberImagePainter(it),
+                contentDescription = null,
+                modifier = Modifier
+                    .size(100.dp)
+                    .align(Alignment.CenterHorizontally)
+            )
+        } ?: run {
+            Text("No Profile Picture")
+        }
+
+        Button(onClick = { imagePickerLauncher.launch("image/*") }) {
+            Text("Select Profile Picture")
+        }
+
+        Spacer(modifier = Modifier.height(16.dp))
+
+        Button(onClick = {
+            loading = true
+            scope.launch {
+                val imageUrl = uploadImageToFirebase(imageUri,context,userId) // Upload the image and get the URL
+                val updatedUser = imageUrl?.let { User(name, phoneNumber, address, it) }
+                if (updatedUser != null) {
+                    userViewModel.saveUserData(updatedUser, userId).collect { resource ->
+                        loading = false
+                        when (resource) {
+                            is Resource.Success -> {
+                                // Handle successful update, e.g., navigate back or show a message
+                            }
+
+                            is Resource.Error -> {
+                                // Handle error, e.g., show a message
+                            }
+
+                            is Resource.Loading -> {
+                                // Show loading state if needed
+                            }
+                        }
+                    }
+                }
+            }
+        }) {
+            Text("Save Changes")
+        }
+
+        if (loading) {
+            CircularProgressIndicator()
+        }
     }
 }
 
+// Function to upload the image to Firebase Storage
+suspend fun uploadImageToFirebase(imageUri: Uri?, context: Context, userId : String): String? {
+    if (imageUri == null) return null
+   // val context = LocalContext.current.applicationContext
+    val storage = FirebaseStorage.getInstance()
+    val storageRef = storage.reference
 
+     // Replace with actual user ID or unique identifier
+    val imageRef = storageRef.child("profile_pictures/$userId.jpg") // Define the path in storage
+
+    return try {
+        val inputStream: InputStream? = context.contentResolver.openInputStream(imageUri)
+        inputStream?.let {
+            val uploadTask = imageRef.putStream(it).await() // Use Kotlin Coroutines to await the upload
+            val downloadUrl = imageRef.downloadUrl.await() // Get the download URL
+            downloadUrl.toString() // Return the URL as a string
+        }
+    } catch (e: Exception) {
+        e.printStackTrace()
+        null // Handle error appropriately
+    }
+}

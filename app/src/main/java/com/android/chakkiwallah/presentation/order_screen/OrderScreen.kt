@@ -30,6 +30,7 @@ import androidx.navigation.NavController
 import com.android.chakkiwallah.common.Resource
 import com.android.chakkiwallah.domain.model.Order
 import com.android.chakkiwallah.domain.model.Product
+import com.android.chakkiwallah.presentation.animation.LoadingScreen
 import com.android.chakkiwallah.presentation.cart.CartViewModel
 import com.android.chakkiwallah.presentation.login.LoginViewModel
 import kotlinx.coroutines.flow.MutableStateFlow
@@ -52,7 +53,7 @@ fun OrderListScreen(
 
     when (ordersState) {
         is Resource.Loading -> {
-            CircularProgressIndicator()
+          LoadingScreen()
         }
         is Resource.Success -> {
             val orders = (ordersState as Resource.Success).data ?: emptyList()

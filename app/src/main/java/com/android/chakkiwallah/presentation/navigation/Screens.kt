@@ -14,6 +14,6 @@ sealed class Screens(val route: String) {
 
     object Splash : Screens("spalsh_screen")
 
-  /*  object Dialogue : Screens("dialog")*/
+   object EditProfile : Screens("edit")
 
 }

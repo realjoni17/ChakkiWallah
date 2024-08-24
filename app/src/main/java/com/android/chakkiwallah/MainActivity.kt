@@ -16,10 +16,16 @@ import androidx.compose.material.MaterialTheme
 import androidx.compose.material.Scaffold
 import androidx.compose.material.Surface
 import androidx.compose.material.Text
+import androidx.compose.runtime.Composable
+import androidx.compose.runtime.LaunchedEffect
+import androidx.compose.runtime.getValue
+import androidx.compose.runtime.mutableStateOf
+import androidx.compose.runtime.setValue
 import androidx.compose.ui.Modifier
 import androidx.hilt.navigation.compose.hiltViewModel
 import androidx.navigation.compose.rememberNavController
 import com.android.chakkiwallah.domain.model.Product
+import com.android.chakkiwallah.presentation.animation.Sucess
 
 import com.android.chakkiwallah.presentation.bottom_navbar.BottomNavItem
 import com.android.chakkiwallah.presentation.login.LoginViewModel
@@ -32,6 +38,7 @@ import com.android.chakkiwallah.presentation.ui.theme.ChakkiWallahTheme
 import com.razorpay.Checkout
 import com.razorpay.PaymentResultListener
 import dagger.hilt.android.AndroidEntryPoint
+import kotlinx.coroutines.delay
 import org.json.JSONObject
 
 @AndroidEntryPoint
@@ -41,6 +48,7 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
     private val PAYMENT_REQUEST_CODE = 1234
     private val viewModel = viewModels<PaymentViewModel>()
     private val loginViewModel = viewModels<LoginViewModel>()
+    private var showSuccess by mutableStateOf(false)
     @SuppressLint("UnusedMaterialScaffoldPaddingParameter")
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -85,13 +93,22 @@ class MainActivity : ComponentActivity(), PaymentResultListener {
         }
     }
 
+
     override fun onPaymentSuccess(paymentId: String?) {
         val uid = loginViewModel.value.uid
         if (uid != null) {
             viewModel.value.transferCartToOrders(uid, paymentId ?: "")
+
         }
         Log.d("", "Payment successful: $paymentId")
+
         // Handle success
+        Toast.makeText(this, "Payment successful", Toast.LENGTH_LONG).show()
+        setContent{
+
+            Sucess(onDismiss = {showSuccess = false})
+
+        }
     }
 
     override fun onPaymentError(code: Int, response: String?) {

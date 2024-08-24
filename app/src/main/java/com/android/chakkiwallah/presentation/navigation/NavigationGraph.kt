@@ -1,5 +1,6 @@
 package com.android.chakkiwallah.presentation.navigation
 
+import EditProfile
 import LoginScreen
 import UserProfileScreen
 import android.util.Log
@@ -54,11 +55,14 @@ fun NavigationGraph(
            OrderListScreen()
         }
         composable(route = Screens.Profile.route){
-            UserProfileScreen( navController= navController
+            UserProfileScreen( navController = navController
                 )
         }
         composable(route = Screens.Splash.route){
             SplashScreen(navController = navController)
+        }
+        composable(route = Screens.EditProfile.route) {
+            EditProfile()
         }
 
     }
